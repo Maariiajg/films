@@ -94,7 +94,7 @@ public class FilmController {
 		return ResponseEntity.status(HttpStatus.OK).body(this.filmService.peliculasDrama());
 	}
 
-    // Obtener películas por género (ACCION, COMEDIA, DRAMA, OTRO) este no es necesario
+    // Obtener películas por género (ACCION, COMEDIA, DRAMA, OTRO) este obtiene formato lista con todos los datos
     @GetMapping("/genero/{genero}")
     public List<Film> getByGenero(@PathVariable Genero genero) {
         return filmService.getByGenero(genero);
