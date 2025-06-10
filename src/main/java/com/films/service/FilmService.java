@@ -2,7 +2,7 @@ package com.films.service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,7 +28,7 @@ public class FilmService {
     // Obtener película por ID
     public Film findById(int id) {
  		if(!this.filmRepository.existsById(id)) {
- 			throw new FilmNotFoundException("No existe el juego con ID: " + id);
+ 			throw new FilmNotFoundException("No existe la pelicula con ID: " + id);
  		}
  
  		return this.filmRepository.findById(id).get();
@@ -49,7 +49,7 @@ public class FilmService {
     // Actualizar película sin modificar puntuación
     public Film update(int id, Film film) {
     	if(!this.filmRepository.existsById(id)) {
- 	        throw new FilmNotFoundException("No existe el videojuego con ID: " + id);
+ 	        throw new FilmNotFoundException("No existe la pelicula con ID: " + id);
  	    }
     	if (film.getDuracion() < 60) {
             throw new IllegalArgumentException("La duración debe ser al menos 60 minutos.");
@@ -71,9 +71,34 @@ public class FilmService {
     }
 
     // Eliminar película por ID
-    public void delete(int id) {
-        filmRepository.deleteById(id);
-    }
+    public void deleteById(int id) {
+ 		if(!this.filmRepository.existsById(id)) {
+ 			throw new FilmNotFoundException("No existe la pelicula con ID: " + id);
+ 		}
+ 
+ 		this.filmRepository.deleteById(id);
+ 	}
+    
+  //Obtener peliculas de ACCION
+    public List<String> peliculasAccion() { 
+ 		return this.filmRepository.findByGenero(Genero.ACCION).stream()
+ 				.map(t -> t.getTitulo())
+ 				.collect(Collectors.toList());
+ 	}
+    
+  //Obtener peliculas de COMEDIA
+    public List<String> peliculasComedia() { 
+ 		return this.filmRepository.findByGenero(Genero.COMEDIA).stream()
+ 				.map(t -> t.getTitulo())
+ 				.collect(Collectors.toList());
+ 	}
+    
+  //Obtener peliculas de DRAMA
+    public List<String> peliculasDrama() { 
+ 		return this.filmRepository.findByGenero(Genero.DRAMA).stream()
+ 				.map(t -> t.getTitulo())
+ 				.collect(Collectors.toList());
+ 	}
 
     // Obtener películas por género
     public List<Film> getByGenero(Genero genero) {
@@ -81,23 +106,23 @@ public class FilmService {
     }
 
     // Obtener películas no estrenadas
-    public List<Film> getNotReleased() {
+    public List<Film> getNoEstrenadas() {
         return filmRepository.findByFechaEstrenoAfter(LocalDate.now());
     }
 
     // Obtener películas estrenadas este año
-    public List<Film> getReleasedThisYear() {
+    public List<Film> getEstrenadasThisYear() {
         LocalDate now = LocalDate.now();
         return filmRepository.findByFechaEstrenoBetween(LocalDate.of(now.getYear(), 1, 1), LocalDate.of(now.getYear(), 12, 31));
     }
 
     // Obtener películas estrenadas en un año específico
-    public List<Film> getReleasedInYear(int year) {
+    public List<Film> getEstrenadaInYear(int year) {
         return filmRepository.findByFechaEstrenoBetween(LocalDate.of(year, 1, 1), LocalDate.of(year, 12, 31));
     }
 
     // Obtener películas en rango de puntuación
-    public List<Film> getByRatingRange(double min, double max) {
+    public List<Film> getRangoPuntuacion(double min, double max) {
         return filmRepository.findByPuntuacionBetween(min, max);
     }
 
