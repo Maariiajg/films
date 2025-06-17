@@ -48,6 +48,9 @@ public class FilmService {
 
     // Actualizar película sin modificar puntuación
     public Film update(int id, Film film) {
+    	if (id != film.getId()) {
+            throw new FilmException("El ID de la URL no coincide con el ID del cuerpo.");
+        }
     	if(!this.filmRepository.existsById(id)) {
  	        throw new FilmNotFoundException("No existe la pelicula con ID: " + id);
  	    }
